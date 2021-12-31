@@ -9,14 +9,26 @@ import Foundation
 
 class ContentModel: ObservableObject {
     
+    // List of modules
     @Published var modules = [Module]()
+    
+    // Current module
+    @Published var currentModule: Module?
+    
+    var currentModuleIndex = 0
+    
+    // Current lressdon
+    @Published var currentLesson: Lesson?
+    var currentLessonIndex = 0
+    
+    
     var styleData: Data?
     
     init() {
-        
         getLocalData()
-        
     }
+    
+    // Mark: - Data Methods
     
     func getLocalData() {
         // get a url to the json file
@@ -46,11 +58,41 @@ class ContentModel: ObservableObject {
             
         }
         catch {
-            print("erro")
+            print("error")
         }
         
         
     }
+    
+    // Mark: - Module Control Methods
+    
+    func beginModule(_ moduleid: Int) {
+        for index in 0..<modules.count {
+            if modules[index].id == moduleid {
+                currentModuleIndex = index
+                break
+            }
+            
+        }
+        currentModule = modules[currentModuleIndex]
+    }
+    
+    func beginLesson(_ lessonIndex:Int) {
+        // check that the lesson index is within range of module lessons
+        if lessonIndex < currentModule!.content.lessons.count {
+            currentLessonIndex = lessonIndex
+            
+        }
+        else {
+            currentLessonIndex = 0
+        }
+        currentLesson = currentModule?.content.lessons[currentLessonIndex]
+        
+        
+    }
+    
+    
+    
     
     
 }
